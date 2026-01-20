@@ -1,36 +1,49 @@
+import { ProductDocument, ProductModel } from "../models/product.model";
 export interface Product {
-  id: number;
+  type: string;
   name: string;
   price: number;
 }
 
-const products: Product[] = [
-  { id: 1, name: "Shoe", price: 50 },
-  { id: 2, name: "Bag", price: 100 },
-];
-
-export const createProduct = async (
+export const createProductService = async (
+  type: string,
   name: string,
-  price: number
-): Promise<Product> => {
-  return new Promise((resolve, reject) => {
-    const exsistingProduct = products.find((product) => product.name === name);
-    setTimeout(() => {
-      if (exsistingProduct) {
-        reject(new Error("Product already exists"));
-        return;
-      }
-      const newProduct: Product = {
-        id: products.length + 1,
-        name,
-        price,
-      };
-      products.push(newProduct);
-      resolve(newProduct);
-    }, 100);
-  });
+  price: number,
+) => {
+  const existingProduct = await ProductModel.findOne({ name });
+  if (existingProduct) {
+    throw new Error("Product with this name already exists");
+  }
+
+  const newProduct: ProductDocument = {
+    type,
+    name,
+    price,
+  };
+
+  const created = await ProductModel.create(newProduct);
+  return created;
 };
 
-export const findAllProducts = async (): Promise<Product[]> => {
+export const findAllProducts = async () => {
+  const products = await ProductModel.find();
+
+  if (products.length === 0) {
+    return {
+      message: "No products found",
+    };
+  }
+
   return products;
+};
+
+export const deleteProductService = async (id: string) => {
+  const productToDelete = await ProductModel.findById(id);
+
+  if (!productToDelete) {
+    return { message: "Product not found" };
+  }
+
+  await ProductModel.findByIdAndDelete(productToDelete._id);
+  return productToDelete;
 };
