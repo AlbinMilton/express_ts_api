@@ -8,9 +8,10 @@ import { getUserById } from "../controllers/user.controller";
 import { updateById } from "../controllers/user.controller";
 import { validate } from "../middleware/validate.middleware";
 import { createUserValidation } from "../models/user.model";
+import { protect } from "../middleware/auth.middleware";
 const router = Router();
 
-router.get("/", findAllUsers);
+router.get("/", protect, findAllUsers);
 router.post("/", validate(createUserValidation), createUser);
 router.get("/:id", getUserById);
 router.put("/:id", updateById);
