@@ -25,3 +25,18 @@ export const protect = async (
     next(error);
   }
 };
+
+type UserRole = "user" | "admin";
+
+export const restrictTo = (...roles: UserRole[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+
+    if (!user || !roles.includes(user.role as UserRole)) {
+      return res.status(403).json({
+        message: "Forbidden, you do not have have the required permissions",
+      });
+    }
+    next();
+  };
+};

@@ -8,12 +8,18 @@ import { getUserById } from "../controllers/user.controller";
 import { updateById } from "../controllers/user.controller";
 import { validate } from "../middleware/validate.middleware";
 import { createUserValidation } from "../models/user.model";
-import { protect } from "../middleware/auth.middleware";
+import { protect, restrictTo } from "../middleware/auth.middleware";
 const router = Router();
 
-router.get("/", protect, findAllUsers);
-router.post("/", validate(createUserValidation), createUser);
-router.get("/:id", getUserById);
-router.put("/:id", updateById);
-router.delete("/:id", deleteUserById);
+router.get("/", protect, restrictTo("admin"), findAllUsers);
+router.post(
+  "/",
+  protect,
+  restrictTo("admin"),
+  validate(createUserValidation),
+  createUser,
+);
+router.get("/:id", protect, restrictTo("admin"), getUserById);
+router.put("/:id", protect, restrictTo("admin"), updateById);
+router.delete("/:id", protect, restrictTo("admin"), deleteUserById);
 export default router;
