@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { z } from "zod";
 
+export type UserRole = "user" | "admin";
 export interface UserDocument {
   id: string;
   name: string;
@@ -9,6 +10,7 @@ export interface UserDocument {
   password: string | undefined;
   createdAt?: Date;
   updatedAt?: Date;
+  role?: UserRole;
 }
 
 export const createUserValidation = z.object({
@@ -42,6 +44,7 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     age: { type: Number, required: true },
     password: { type: String, required: true, select: false },
+    role: { type: String, enum: ["user", "admin"], default: "user" },
   },
   { timestamps: true },
 );
