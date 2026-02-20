@@ -9,8 +9,9 @@ export const createUser = async (
   next: NextFunction,
 ) => {
   try {
-    const { name, email, age, password } = req.body;
-    const newUser = await userService.createUser(name, email, age, password);
+    const data = req.body;
+    console.log(data);
+    const newUser = await userService.createUser(data);
     res.status(201).json(newUser);
   } catch (error) {
     next(error);
