@@ -11,7 +11,7 @@ import { createUserValidation } from "../models/user.model";
 import { protect, restrictTo } from "../middleware/auth.middleware";
 const router = Router();
 
-router.get("/", protect, restrictTo("admin"), findAllUsers);
+router.get("/", findAllUsers);
 router.post(
   "/",
   protect,

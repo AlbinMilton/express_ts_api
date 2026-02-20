@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import { createApp } from "./app";
 import mongoose from "mongoose";
+import { pool } from "./config/db";
 
 dotenv.config();
 

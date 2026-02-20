@@ -1,5 +1,6 @@
 import { UserDocument, UserModel } from "../models/user.model";
 import { AppError } from "../utils/app.error";
+import { pool } from "../config/db";
 
 export interface Users {
   name: string;
@@ -34,12 +35,15 @@ export const createUser = async (
 };
 
 export const findAllUsers = async () => {
-  const users = await UserModel.find();
+  const results = await pool.query<Partial<Users>>(
+    "SELECT id, firstname, lastname, email, admin, createdat, updatedat FROM users",
+  );
+  console.log(results);
 
-  if (users.length === 0) {
+  if (results.rows.length === 0) {
     throw new AppError("No users found", 404);
   }
-  return users;
+  return results.rows;
 };
 
 export const getUserById = async (id: string) => {
