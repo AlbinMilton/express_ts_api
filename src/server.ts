@@ -14,7 +14,14 @@ const startServer = async () => {
     console.info("✅ Connected to MONGO DB - Congrats!");
 
     const app = createApp();
-
+    pool
+      .connect()
+      .then(() => {
+        console.log("✅ DB Connected");
+      })
+      .catch((e) => {
+        console.error(e);
+      });
     app.listen(PORT, () => {
       console.log(
         `🚀Server is running in ${process.env.NODE_ENV} mode on http://localhost:${PORT}`,
