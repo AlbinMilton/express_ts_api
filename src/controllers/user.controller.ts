@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import * as userService from "../services/user.service";
-import { validate } from "../middleware/validate.middleware";
-import { CreateUserTypeZ, RegisterUserTypeZ } from "../models/user.model";
+import { CreateUserTypeZ } from "../models/user.model";
 
 export const createUser = async (
-  req: Request<{}, {}, RegisterUserTypeZ>,
+  req: Request<{}, {}, CreateUserTypeZ>,
   res: Response,
   next: NextFunction,
 ) => {

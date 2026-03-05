@@ -17,7 +17,6 @@ export const createUserValidation = z.object({
   body: z.object({
     name: z.string("Please enter a valid name").min(2),
     email: z.email("Please enter a valid email"),
-    age: z.number("Please enter a valid age").min(0),
   }),
 });
 

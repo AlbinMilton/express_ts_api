@@ -1,24 +1,19 @@
-import { UserDocument, UserModel } from "../models/user.model";
+import { UserModel } from "../models/user.model";
 import { AppError } from "../utils/app.error";
 import { pool } from "../config/db";
-import bcrypt from "bcrypt";
 
 export interface Users {
   id: string;
-  firstname: string;
-  lastname: string;
+  name: string;
   email: string;
-  admin?: boolean;
-  password: string;
   createdat: string;
   updatedat: string;
 }
 
 export const createUser = async (data: Partial<Users>) => {
   const query =
-    "INSERT INTO users (firstname, lastname, email, password) VALUES ($1, $2, $3, $4) RETURNING id, firstname, lastname, email, admin, createdat, updatedat";
-  const encryptedPassword = await bcrypt.hash(data.password as string, 10);
-  const values = [data.firstname, data.lastname, data.email, encryptedPassword];
+    "INSERT INTO users (name, email) VALUES ($1, $2) RETURNING id, name, email, createdat, updatedat";
+  const values = [data.name, data.email];
   const result = await pool.query<Partial<Users>>(query, values);
   if (!result.rows[0]) {
     throw new AppError("Failed to create user", 500);
@@ -28,7 +23,7 @@ export const createUser = async (data: Partial<Users>) => {
 
 export const findAllUsers = async () => {
   const results = await pool.query<Partial<Users>>(
-    "SELECT id, firstname, lastname, email, admin, createdat, updatedat FROM users",
+    "SELECT id, name, email, createdat, updatedat FROM users",
   );
   console.log(results);
 
@@ -52,7 +47,7 @@ export const updateById = async (id: string, updateData: Partial<Users>) => {
   const setClause = fields
     .map((field, index) => `${field} = $${index + 1}`)
     .join(", ");
-  const query = `UPDATE users SET ${setClause} WHERE id = ${id} RETURNING id, firstname, lastname, email, admin, createdat, updatedat`;
+  const query = `UPDATE users SET ${setClause} WHERE id = ${id} RETURNING id, name, email, createdat, updatedat`;
   const result = await pool.query<Partial<Users>>(query, values);
   if (!result.rows[0]) {
     throw new AppError("Failed to update user", 500);
